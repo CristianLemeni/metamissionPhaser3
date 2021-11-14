@@ -1,0 +1,167 @@
+{
+	"textures": [
+		{
+			"image": "planets.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 745,
+				"h": 548
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "redGiant.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 290,
+						"h": 290
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 290,
+						"h": 290
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 290,
+						"h": 290
+					}
+				},
+				{
+					"filename": "sun.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 261,
+						"h": 261
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 7,
+						"w": 261,
+						"h": 254
+					},
+					"frame": {
+						"x": 1,
+						"y": 293,
+						"w": 261,
+						"h": 254
+					}
+				},
+				{
+					"filename": "planet4.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 260,
+						"h": 260
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 260,
+						"h": 260
+					},
+					"frame": {
+						"x": 293,
+						"y": 1,
+						"w": 260,
+						"h": 260
+					}
+				},
+				{
+					"filename": "planet2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 176,
+						"h": 177
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 176,
+						"h": 177
+					},
+					"frame": {
+						"x": 555,
+						"y": 1,
+						"w": 176,
+						"h": 177
+					}
+				},
+				{
+					"filename": "gasGiant.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 252,
+						"h": 261
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 252,
+						"h": 261
+					},
+					"frame": {
+						"x": 293,
+						"y": 263,
+						"w": 252,
+						"h": 261
+					}
+				},
+				{
+					"filename": "planet3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 158,
+						"h": 158
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 158,
+						"h": 158
+					},
+					"frame": {
+						"x": 555,
+						"y": 180,
+						"w": 158,
+						"h": 158
+					}
+				},
+				{
+					"filename": "planet1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 197,
+						"h": 196
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 197,
+						"h": 196
+					},
+					"frame": {
+						"x": 547,
+						"y": 340,
+						"w": 197,
+						"h": 196
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:a38d6d26d744da84773868b99455efa4:6f5b9ee80766c36b81d9ba897c2c56b0:b39012af8c10e6f2542ba48f4ca1957d$"
+	}
+}

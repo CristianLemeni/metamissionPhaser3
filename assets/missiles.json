@@ -1,0 +1,104 @@
+{
+	"textures": [
+		{
+			"image": "missiles.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 223,
+				"h": 612
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "missile1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 221,
+						"h": 384
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 221,
+						"h": 384
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 221,
+						"h": 384
+					}
+				},
+				{
+					"filename": "missile3.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 69,
+						"h": 224
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 69,
+						"h": 224
+					},
+					"frame": {
+						"x": 1,
+						"y": 387,
+						"w": 69,
+						"h": 224
+					}
+				},
+				{
+					"filename": "missile2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 65,
+						"h": 216
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 65,
+						"h": 216
+					},
+					"frame": {
+						"x": 72,
+						"y": 387,
+						"w": 65,
+						"h": 216
+					}
+				},
+				{
+					"filename": "missile4.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 65,
+						"h": 216
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 65,
+						"h": 216
+					},
+					"frame": {
+						"x": 139,
+						"y": 387,
+						"w": 65,
+						"h": 216
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:c6d0312c9983a727914493d002628891:527e1d081d0009161b10d79ab38a7cf3:8d689123e69039521733e59a295f5240$"
+	}
+}

@@ -1,0 +1,104 @@
+{
+	"textures": [
+		{
+			"image": "clouds.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 795,
+				"h": 338
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "purpleSmoke.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 313,
+						"h": 336
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 313,
+						"h": 336
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 313,
+						"h": 336
+					}
+				},
+				{
+					"filename": "brownSmoke.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 268,
+						"h": 332
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 268,
+						"h": 332
+					},
+					"frame": {
+						"x": 316,
+						"y": 1,
+						"w": 268,
+						"h": 332
+					}
+				},
+				{
+					"filename": "blackSmoke.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 210,
+						"h": 144
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 208,
+						"h": 144
+					},
+					"frame": {
+						"x": 586,
+						"y": 1,
+						"w": 208,
+						"h": 144
+					}
+				},
+				{
+					"filename": "blackSmoke2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 210,
+						"h": 144
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 208,
+						"h": 144
+					},
+					"frame": {
+						"x": 586,
+						"y": 147,
+						"w": 208,
+						"h": 144
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:32a9327b8c05c789ca6237522c4db04f:a75af9108a110009818e54a41e67aa42:e96b5453eed6fb7cc3a8e55168758fa4$"
+	}
+}

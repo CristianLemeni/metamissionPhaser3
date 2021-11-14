@@ -1,0 +1,146 @@
+{
+	"textures": [
+		{
+			"image": "spaceships.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 224,
+				"h": 358
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "bigShip2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 172,
+						"h": 166
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 172,
+						"h": 166
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 172,
+						"h": 166
+					}
+				},
+				{
+					"filename": "smallShip2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 48,
+						"h": 41
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 48,
+						"h": 41
+					},
+					"frame": {
+						"x": 175,
+						"y": 1,
+						"w": 48,
+						"h": 41
+					}
+				},
+				{
+					"filename": "smallShip1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 37,
+						"h": 43
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 37,
+						"h": 43
+					},
+					"frame": {
+						"x": 175,
+						"y": 44,
+						"w": 37,
+						"h": 43
+					}
+				},
+				{
+					"filename": "bigShip1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 129,
+						"h": 177
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 129,
+						"h": 177
+					},
+					"frame": {
+						"x": 1,
+						"y": 169,
+						"w": 129,
+						"h": 177
+					}
+				},
+				{
+					"filename": "mediumShip2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 89,
+						"h": 89
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 89,
+						"h": 89
+					},
+					"frame": {
+						"x": 132,
+						"y": 169,
+						"w": 89,
+						"h": 89
+					}
+				},
+				{
+					"filename": "mediumShip1.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 83,
+						"h": 97
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 83,
+						"h": 97
+					},
+					"frame": {
+						"x": 132,
+						"y": 260,
+						"w": 83,
+						"h": 97
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:e81e03d7e00e69c5e0ef80a54c458d1a:3c8f5108927e9721f354708d903228bc:3272f82166f65e17cc3a00865a7647ff$"
+	}
+}

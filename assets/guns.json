@@ -1,0 +1,125 @@
+{
+	"textures": [
+		{
+			"image": "guns.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 30,
+				"h": 174
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "RocketLauncher.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 27,
+						"h": 42
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 27,
+						"h": 42
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 27,
+						"h": 42
+					}
+				},
+				{
+					"filename": "Minigun.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 22,
+						"h": 61
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 22,
+						"h": 61
+					},
+					"frame": {
+						"x": 1,
+						"y": 45,
+						"w": 22,
+						"h": 61
+					}
+				},
+				{
+					"filename": "SideGun1 copy 11.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 13,
+						"h": 46
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 13,
+						"h": 46
+					},
+					"frame": {
+						"x": 1,
+						"y": 108,
+						"w": 13,
+						"h": 46
+					}
+				},
+				{
+					"filename": "SmallGun1 copy 2.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 13,
+						"h": 28
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 13,
+						"h": 28
+					},
+					"frame": {
+						"x": 16,
+						"y": 108,
+						"w": 13,
+						"h": 28
+					}
+				},
+				{
+					"filename": "SmallGunM2 copy 12.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 12,
+						"h": 35
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 12,
+						"h": 35
+					},
+					"frame": {
+						"x": 16,
+						"y": 138,
+						"w": 12,
+						"h": 35
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:fdfe16e703a4788b5a9c1f1a9e8ce9c0:c51b00fb8b3d6e2a74ca0a5049b0abd2:62c1f540b5fd80b9e41584087e1ed9b4$"
+	}
+}
