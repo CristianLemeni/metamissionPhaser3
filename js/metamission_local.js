@@ -62,6 +62,7 @@ const spiderTank = {
             frameRate: 30
         });
 
+
         rootObj.emitter = new Phaser.Events.EventEmitter();
 
         rootObj.horizontalVelocity = 0
@@ -70,13 +71,15 @@ const spiderTank = {
         rootObj.playerContainer = rootObj.add.container()
         rootObj.playerContainer.health = 10
         rootObj.enemies = []
+        rootObj.target = new Phaser.Math.Vector2();
+        rootObj.physics.world.enableBody(rootObj.playerContainer);
 
         rootObj.aGrid = new AlignGrid({ scene: rootObj, rows: 7, cols: 13 })
 
         addBackground()
         addPlayer()
         addKeyboardControls()
-        rootObj.aGrid.showNumbers()
+        // rootObj.aGrid.showNumbers()
         rootObj.children.bringToTop(rootObj.playerContainer);
 
         rootObj.joyStick = rootObj.plugins.get('rexvirtualjoystickplugin').add(rootObj, {
@@ -107,8 +110,7 @@ const spiderTank = {
             rootObj.time.delayedCall(1, () => {
                 striker.charge()
             })
-        })
-
+        })      
 
 
         rootObj.emitter.on('enemyShoot', () => {
@@ -177,6 +179,14 @@ const spiderTank = {
             playerShipEngine.y += playerShip.displayHeight / 1.5
             playerShipGun.y -= playerShip.displayHeight / 2
 
+            rootObj.playerContainer.tween = rootObj.tweens.add({
+                targets: playerShipEngine,
+                y: { value: playerShipEngine.y + 10, duration: 10, ease: 'Power1' },
+                yoyo: true,
+                loop: -1
+            });
+
+
             rootObj.aGrid.placeAtIndex(71, rootObj.playerContainer)
         }
 
@@ -211,6 +221,13 @@ const spiderTank = {
             enemyContainer.add(enemyShipShipGun2)
             enemyContainer.add(enemyShip)
             enemyContainer.add(enemyShield)
+
+            rootObj.playerContainer.tween = rootObj.tweens.add({
+                targets: enemyShipShipEngine,
+                y: { value: enemyShipShipEngine.y + 5, duration: 50, ease: 'Power1' },
+                yoyo: true,
+                loop: -1
+            });
 
             enemyContainer.shoot = () => {
                 shootProjectile(enemyContainer.list[1].x + enemyContainer.x,
@@ -279,6 +296,13 @@ const spiderTank = {
                     enemyContainer.list[1].y + enemyContainer.y * 1.05, 0,
                     500, false, 1, true, 0.035, 0)
             }
+
+            rootObj.playerContainer.tween = rootObj.tweens.add({
+                targets: enemyShipShipEngine,
+                y: { value: enemyShipShipEngine.y + 5, duration: 50, ease: 'Power1' },
+                yoyo: true,
+                loop: -1
+            });
 
             return enemyContainer
         }
@@ -399,6 +423,13 @@ const spiderTank = {
                     500, false, 1, true, 0.035, 0)
             }
 
+            rootObj.playerContainer.tween = rootObj.tweens.add({
+                targets: enemyShipShipEngine,
+                y: { value: enemyShipShipEngine.y + 5, duration: 50, ease: 'Power1' },
+                yoyo: true,
+                loop: -1
+            });
+
             return enemyContainer
         }
 
@@ -432,86 +463,93 @@ const spiderTank = {
             // KEYS WSAD
             rootObj.keyW = rootObj.input.keyboard.addKey('W');
             rootObj.keyW.on('down', () => {
-                console.log("TEST")
                 rootObj.verticalVelocity--
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
             rootObj.keyW.on('up', () => {
                 if (rootObj.verticalVelocity < 0) {
                     rootObj.verticalVelocity++
                 }
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
             rootObj.keyA = rootObj.input.keyboard.addKey('A');
             rootObj.keyA.on('down', () => {
                 rootObj.horizontalVelocity--
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
             rootObj.keyA.on('up', () => {
                 if (rootObj.horizontalVelocity < 0) {
                     rootObj.horizontalVelocity++
                 }
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
             rootObj.keyS = rootObj.input.keyboard.addKey('S');
             rootObj.keyS.on('down', () => {
                 rootObj.verticalVelocity++
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
             rootObj.keyS.on('up', () => {
                 if (rootObj.verticalVelocity > 0) {
                     rootObj.verticalVelocity--
                 }
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
             rootObj.keyD = rootObj.input.keyboard.addKey('D');
             rootObj.keyD.on('down', () => {
                 rootObj.horizontalVelocity++
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
             rootObj.keyD.on('up', () => {
                 if (rootObj.horizontalVelocity > 0) {
                     rootObj.horizontalVelocity--
                 }
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
 
             //arrows
             rootObj.keyW = rootObj.input.keyboard.addKey('up');
             rootObj.keyW.on('down', () => {
                 rootObj.verticalVelocity--
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
             rootObj.keyW.on('up', () => {
-                rootObj.verticalVelocity++
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                if (rootObj.verticalVelocity < 0) {
+                    rootObj.verticalVelocity++
+                }
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
             rootObj.keyA = rootObj.input.keyboard.addKey('left');
             rootObj.keyA.on('down', () => {
                 rootObj.horizontalVelocity--
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
             rootObj.keyA.on('up', () => {
-                rootObj.horizontalVelocity++
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                if (rootObj.horizontalVelocity < 0) {
+                    rootObj.horizontalVelocity++
+                }
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
             rootObj.keyS = rootObj.input.keyboard.addKey('down');
             rootObj.keyS.on('down', () => {
                 rootObj.verticalVelocity++
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
             rootObj.keyS.on('up', () => {
-                rootObj.verticalVelocity--
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                if (rootObj.verticalVelocity > 0) {
+                    rootObj.verticalVelocity--
+                }
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
             rootObj.keyD = rootObj.input.keyboard.addKey('right');
             rootObj.keyD.on('down', () => {
                 rootObj.horizontalVelocity++
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
             rootObj.keyD.on('up', () => {
-                rootObj.horizontalVelocity--
-                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer)
+                if (rootObj.horizontalVelocity > 0) {
+                    rootObj.horizontalVelocity--
+                }
+                setPlayerVelocity(rootObj.horizontalVelocity, rootObj.verticalVelocity, rootObj.playerContainer, true)
             })
 
             rootObj.input.keyboard.addCapture('SPACE');
@@ -522,12 +560,16 @@ const spiderTank = {
             });
         }
 
-        function setPlayerVelocity(x, y, playerContainer) {
-            const vx = x * rootObj.speed
-            const vy = y * rootObj.speed
-            for (let i = 0; i < playerContainer.list.length; i++) {
-                playerContainer.list[i].setVelocity(vx, vy)
+        function setPlayerVelocity(x, y, playerContainer, key = false) {
+            if (key) {
+                rootObj.target.x = playerContainer.x + x
+                rootObj.target.y = playerContainer.y + y
             }
+            else {
+                rootObj.target.x += x
+                rootObj.target.y += y
+            }
+            rootObj.physics.moveToObject(playerContainer, rootObj.target, 200);
         }
 
         function removeItemOnce(arr, value) {
@@ -554,6 +596,9 @@ const spiderTank = {
                 removeItemOnce(rootObj.enemies, enemy.parentContainer)
                 enemy.parentContainer.destroy()
                 explode(x, y)
+            }
+            else if (enemy.health == 0) {
+                enemy.parentContainer.list[enemy.parentContainer.list.length - 1].visible = false
             }
         }
 
@@ -624,6 +669,8 @@ const spiderTank = {
         }
 
         function joystickFunction() {
+            rootObj.target.x = rootObj.playerContainer.x
+            rootObj.target.y = rootObj.playerContainer.y
             let cursorKeys = rootObj.joyStick.createCursorKeys();
             let forceFactor = rootObj.joyStick.force
             if (forceFactor > 1) {
@@ -661,9 +708,7 @@ const spiderTank = {
                     setPlayerVelocity(-forceFactor, -forceFactor, rootObj.playerContainer)
                     break;
                 default:
-                    for (let i = 0; i < rootObj.playerContainer.list.length; i++) {
-                        rootObj.playerContainer.list[i].body.stop()
-                    }
+                    rootObj.playerContainer.body.stop()
 
             }
         }
@@ -701,6 +746,14 @@ const spiderTank = {
     update() {
         if (this.enemies.length < 1) {
             this.emitter.emit('newWave');
+        }
+        if (this.playerContainer.body) {
+            let distance = Phaser.Math.Distance.Between(this.playerContainer.x, this.playerContainer.y, this.target.x, this.target.y);
+            if (this.playerContainer.body.speed > 0) {
+                if (distance < 1) {
+                    this.playerContainer.body.stop()
+                }
+            }
         }
     },
 
