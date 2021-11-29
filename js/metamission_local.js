@@ -14,6 +14,13 @@ const spiderTank = {
         this.load.spritesheet("shield2", "./assets/shield2.png", { frameWidth: 160, frameHeight: 160 });
         this.load.spritesheet("shield3", "./assets/shield3.png", { frameWidth: 160, frameHeight: 160 });
         this.load.spritesheet('lightning', './assets/lightning.png', { frameWidth: 85, frameHeight: 85 })
+        this.load.audio('bkMusic', ['./assets/sounds/bkMusic.ogg'])
+        this.load.audio('laserSmall', ['./assets/sounds/laserSFX.ogg'])
+        this.load.audio('laserBig', ['./assets/sounds/bigLaser.ogg'])
+        this.load.audio('shieldHit', ['./assets/sounds/shieldHit.ogg'])
+        this.load.audio('explosion', ['./assets/sounds/explode.ogg'])
+        this.load.audio('laserBig2', ['./assets/sounds/bigLaser2.ogg'])
+
     },
 
     create() {
@@ -62,6 +69,14 @@ const spiderTank = {
             frameRate: 30
         });
 
+        rootObj.bkMusic = rootObj.sound.add('bkMusic', { volume: 0.25 });
+        rootObj.bkMusic.play({ loop: true })
+        rootObj.explosionAudio = this.sound.add('explosion');
+        rootObj.shieldHit = this.sound.add('shieldHit');
+        rootObj.laserSmall = this.sound.add('laserSmall');
+        rootObj.laserBig = this.sound.add('laserBig');
+        rootObj.laserBig2 = this.sound.add('laserBig2');
+
 
         rootObj.emitter = new Phaser.Events.EventEmitter();
 
@@ -74,11 +89,17 @@ const spiderTank = {
         rootObj.target = new Phaser.Math.Vector2();
         rootObj.physics.world.enableBody(rootObj.playerContainer);
 
+        rootObj.battleshipHealth = 15
+        rootObj.droneHealth = 3
+        rootObj.strikerHealth = 0
+        rootObj.tankerHealth = 10
+
         rootObj.aGrid = new AlignGrid({ scene: rootObj, rows: 7, cols: 13 })
 
         addBackground()
         addPlayer()
         addKeyboardControls()
+        addScoreCounter()
         // rootObj.aGrid.showNumbers()
         rootObj.children.bringToTop(rootObj.playerContainer);
 
@@ -110,8 +131,9 @@ const spiderTank = {
             rootObj.time.delayedCall(1, () => {
                 striker.charge()
             })
-        })      
+        })
 
+        rootObj.emitter.emit("spawnStriker", 32)
 
         rootObj.emitter.on('enemyShoot', () => {
             for (let i = 0; i < rootObj.enemies.length; i++) {
@@ -126,6 +148,7 @@ const spiderTank = {
             })
         }, this);
 
+        //
         addEnemyRow(3, 6)
         rootObj.time.delayedCall(3000, () => {
             addEnemyRow(16, 6)
@@ -186,6 +209,13 @@ const spiderTank = {
                 loop: -1
             });
 
+            rootObj.playerContainer.shoot = () => {
+                rootObj.laserBig.play({ volume: 0.15 })
+                shootProjectile(rootObj.playerContainer.list[0].x + rootObj.playerContainer.x,
+                    rootObj.playerContainer.list[0].y + rootObj.playerContainer.y,
+                    9, 500, true, -1, true, 0.035, 0)
+            }
+
 
             rootObj.aGrid.placeAtIndex(71, rootObj.playerContainer)
         }
@@ -230,6 +260,7 @@ const spiderTank = {
             });
 
             enemyContainer.shoot = () => {
+                rootObj.laserSmall.play({ volume: 0.25 })
                 shootProjectile(enemyContainer.list[1].x + enemyContainer.x,
                     enemyContainer.list[1].y + enemyContainer.y * 1.25, 5,
                     500, false, 1, true, 0.035, 4.71239, true)
@@ -239,7 +270,7 @@ const spiderTank = {
             }
 
 
-            enemyShip.health = 3
+            enemyShip.health = rootObj.droneHealth
 
             rootObj.aGrid.placeAtIndex(index, enemyContainer)
 
@@ -286,6 +317,8 @@ const spiderTank = {
             rootObj.aGrid.placeAtIndex(index, enemyContainer)
 
             enemyContainer.shoot = () => {
+                rootObj.laserSmall.play({ volume: 0.35 })
+                rootObj.laserBig.play({ volume: 0.35 })
                 shootProjectile(enemyContainer.list[3].x + enemyContainer.x,
                     enemyContainer.list[3].y + enemyContainer.y, 3,
                     500, false, 1, true, 0.015, 1.5708)
@@ -330,18 +363,30 @@ const spiderTank = {
                 const angle = Phaser.Math.RAD_TO_DEG * Phaser.Math.Angle.Between(enemyContainer.x, enemyContainer.y, rootObj.playerContainer.x, rootObj.playerContainer.y);
                 enemyContainer.setAngle(angle - 90);
 
+                rootObj.physics.add.overlap(rootObj.playerContainer.list[rootObj.playerContainer.list.length - 2], enemyShip, (evt) => {
+                    playerTakeDamage()
+                    explode(rootObj.playerContainer.x, rootObj.playerContainer.y)
+                    removeItemOnce(rootObj.enemies, enemyContainer)
+                    enemyContainer.destroy()
+                }, null, this);
+
                 rootObj.tweens.add({
                     targets: enemyContainer,
-                    y: rootObj.playerContainer.y,
+                    y: rootObj.playerContainer.y + rootObj.playerContainer.height,
                     x: rootObj.playerContainer.x,
                     duration: 2000,
                     onComplete: () => {
+                        removeItemOnce(rootObj.enemies, enemyContainer)
                         enemyContainer.destroy()
                     }
                 })
             }
 
+            enemyContainer.shoot = () => {
 
+            }
+
+            enemyShip.health = rootObj.strikerHealth
             rootObj.aGrid.placeAtIndex(index, enemyContainer)
 
             return enemyContainer
@@ -406,6 +451,9 @@ const spiderTank = {
             rootObj.aGrid.placeAtIndex(index, enemyContainer)
 
             enemyContainer.shoot = () => {
+                rootObj.laserBig2.play({ volume: 0.35 })
+                rootObj.laserSmall.play({ volume: 0.35 })
+                rootObj.laserBig.play({ volume: 0.35 })
                 shootProjectile(enemyContainer.list[1].x + enemyContainer.x,
                     enemyContainer.list[1].y + enemyContainer.y * 1.05, 1,
                     500, false, 1, true, 0.015, 0)
@@ -430,6 +478,8 @@ const spiderTank = {
                 loop: -1
             });
 
+            enemyShip.health = rootObj.battleshipHealth
+
             return enemyContainer
         }
 
@@ -452,7 +502,7 @@ const spiderTank = {
             }
             else {
                 rootObj.physics.add.overlap(rootObj.playerContainer.list[rootObj.playerContainer.list.length - 2], missile, (evt) => {
-                    playerTakeDamage
+                    playerTakeDamage()
                     missile.destroy()
                 }, null, this);
             }
@@ -554,9 +604,7 @@ const spiderTank = {
 
             rootObj.input.keyboard.addCapture('SPACE');
             rootObj.input.keyboard.on('keydown-SPACE', function (event) {
-                shootProjectile(rootObj.playerContainer.list[0].x + rootObj.playerContainer.x,
-                    rootObj.playerContainer.list[0].y + rootObj.playerContainer.y,
-                    9, 500, true, -1, true, 0.035, 0)
+                rootObj.playerContainer.shoot()
             });
         }
 
@@ -583,7 +631,18 @@ const spiderTank = {
         function playerTakeDamage() {
             rootObj.playerContainer.health--
             if (rootObj.playerContainer.health < 0) {
+                const x = rootObj.playerContainer.x
+                const y = rootObj.playerContainer.y
                 rootObj.playerContainer.destroy()
+                explode(x, y)
+                rootObj.emitter.emit("endGame")
+            }
+            else if (rootObj.playerContainer.health == 0) {
+                rootObj.shieldHit.play({ volume: 0.15 })
+                rootObj.playerContainer.list[rootObj.playerContainer.list.length - 1].visible = false
+            }
+            else {
+                rootObj.shieldHit.play({ volume: 0.15 })
             }
 
         }
@@ -596,9 +655,14 @@ const spiderTank = {
                 removeItemOnce(rootObj.enemies, enemy.parentContainer)
                 enemy.parentContainer.destroy()
                 explode(x, y)
+                rootObj.scoreCounter.text = (parseInt(rootObj.scoreCounter.text) + 1).toString()
             }
             else if (enemy.health == 0) {
+                rootObj.shieldHit.play({ volume: 0.15 })
                 enemy.parentContainer.list[enemy.parentContainer.list.length - 1].visible = false
+            }
+            else {
+                rootObj.shieldHit.play({ volume: 0.15 })
             }
         }
 
@@ -731,6 +795,7 @@ const spiderTank = {
         function explode(x, y) {
             let exp = rootObj.add.sprite(x, y, 'explosion', frames[0])
             exp.play('explosion', false)
+            rootObj.explosionAudio.play({ volume: 0.35 })
             exp.once('animationcomplete', () => {
                 rootObj.tweens.add({
                     targets: exp,
@@ -740,6 +805,45 @@ const spiderTank = {
                     }
                 })
             });
+        }
+
+        function pauseGame() {
+            rootObj.gamePaused = true
+            rootObj.physics.world.isPaused = true;
+            rootObj.tweens.pauseAll();
+        }
+
+        function resumeGame() {
+            rootObj.gamePaused = false
+            rootObj.physics.world.isPaused = false;
+            rootObj.tweens.resumeAll();
+        }
+
+        function resetGame() {
+            rootObj.registry.destroy(); // destroy registry
+            rootObj.scene.restart(); // restart current scene
+            rootObj.sound.removeAll();
+        }
+
+        function addScoreCounter() {
+            rootObj.scoreCounter = rootObj.add.text(0, 0, '0', {
+                dropShadowAngle: 1.1,
+                dropShadowBlur: 5,
+                dropShadowDistance: 3,
+                fill: "white",
+                fontFamily: "Helvetica",
+                fontSize: 75,
+                letterSpacing: 1,
+                lineHeight: 1,
+                lineJoin: "round",
+                miterLimit: 1,
+                padding: 1,
+                strokeThickness: 1,
+                leading: 1
+            })
+            rootObj.scoreCounter.setOrigin(0.5)
+            rootObj.aGrid.placeAtIndex(1, rootObj.scoreCounter)
+            Align.scaleToGameW(rootObj.scoreCounter, 0.025)
         }
     },
 
