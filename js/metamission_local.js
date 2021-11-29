@@ -8,8 +8,12 @@ const spiderTank = {
         this.load.atlas('guns', './assets/guns.png', './assets/guns.json')
         this.load.atlas('planets', './assets/planets.png', './assets/planets.json')
         this.load.atlas('missiles', './assets/missiles.png', './assets/missiles.json')
+        this.load.atlas('explosion', './assets/explosion.png', './assets/explosion.json');
         this.load.image('star', './assets/star.png')
         this.load.spritesheet("shield", "./assets/shield.png", { frameWidth: 170, frameHeight: 170 });
+        this.load.spritesheet("shield2", "./assets/shield2.png", { frameWidth: 160, frameHeight: 160 });
+        this.load.spritesheet("shield3", "./assets/shield3.png", { frameWidth: 160, frameHeight: 160 });
+        this.load.spritesheet('lightning', './assets/lightning.png', { frameWidth: 85, frameHeight: 85 })
     },
 
     create() {
@@ -26,9 +30,36 @@ const spiderTank = {
 
         rootObj.anims.create({
             key: "shield",
-            frameRate: 30,
+            frameRate: 10,
             frames: rootObj.anims.generateFrameNumbers("shield", { start: 0, end: 10 }),
             repeat: -1
+        });
+
+        rootObj.anims.create({
+            key: "shield2",
+            frameRate: 15,
+            frames: rootObj.anims.generateFrameNumbers("shield2", { start: 0, end: 11 }),
+            repeat: -1
+        });
+
+        rootObj.anims.create({
+            key: "shield3",
+            frameRate: 15,
+            frames: rootObj.anims.generateFrameNumbers("shield3", { start: 0, end: 11 }),
+            repeat: -1
+        });
+
+        rootObj.anims.create({
+            key: "lightning",
+            frameRate: 15,
+            frames: rootObj.anims.generateFrameNumbers("lightning", { start: 0, end: 17 }),
+            repeat: -1
+        });
+
+        rootObj.anims.create({
+            key: 'explosion',
+            frames: rootObj.anims.generateFrameNames('explosion'),
+            frameRate: 30
         });
 
         rootObj.emitter = new Phaser.Events.EventEmitter();
@@ -45,8 +76,40 @@ const spiderTank = {
         addBackground()
         addPlayer()
         addKeyboardControls()
-        // rootObj.aGrid.showNumbers()
+        rootObj.aGrid.showNumbers()
         rootObj.children.bringToTop(rootObj.playerContainer);
+
+        rootObj.joyStick = rootObj.plugins.get('rexvirtualjoystickplugin').add(rootObj, {
+            x: rootObj.cameras.main.worldView.x + rootObj.cameras.main.width / 2,
+            y: rootObj.cameras.main.worldView.y + rootObj.cameras.main.height * 0.85,
+            radius: 50,
+            base: rootObj.add.circle(0, 0, 50, 0x888888),
+            thumb: rootObj.add.circle(0, 0, 25, 0xcccccc),
+        }).on('update', joystickFunction, rootObj);
+        rootObj.joyStick.setVisible(false);
+
+        dynamicJoystick()
+
+
+        rootObj.emitter.on("spawnBattleship", (positionIndex) => {
+            let battleship = addBattleship(positionIndex)
+            addEnemyShipMovement(battleship)
+        })
+
+        rootObj.emitter.on("spawnTanker", (positionIndex) => {
+            let tanker = addTanker(positionIndex)
+            addEnemyShipMovement(tanker)
+        })
+
+        rootObj.emitter.on("spawnStriker", (positionIndex) => {
+            let striker = addStriker(positionIndex)
+            addEnemyShipMovement(striker)
+            rootObj.time.delayedCall(1, () => {
+                striker.charge()
+            })
+        })
+
+
 
         rootObj.emitter.on('enemyShoot', () => {
             for (let i = 0; i < rootObj.enemies.length; i++) {
@@ -67,7 +130,7 @@ const spiderTank = {
         })
 
         const timer = rootObj.time.addEvent({
-            delay: 6000,                // ms
+            delay: 6000,// ms
             callback: () => {
                 rootObj.emitter.emit('enemyShoot');
             },
@@ -75,7 +138,6 @@ const spiderTank = {
             // callbackScope: thisArg,
             loop: true
         });
-
 
         function addBackground() {
             for (let i = 0; i < getRandomInt(100, 1000); i++) {
@@ -96,16 +158,21 @@ const spiderTank = {
         }
 
         function addPlayer() {
-            let playerShip = rootObj.physics.add.sprite(0, 0, 'spaceships', rootObj.shipFrames[3])
+            let playerShip = rootObj.physics.add.sprite(0, 0, 'spaceships', rootObj.shipFrames[4])
             Align.scaleToGameW(playerShip, 0.05)
-            let playerShipEngine = rootObj.physics.add.sprite(0, 0, 'engines', rootObj.shipEnginesFrames[1])
-            Align.scaleToGameW(playerShipEngine, 0.05)
+            let playerShipEngine = rootObj.physics.add.sprite(0, 0, 'engines', rootObj.shipEnginesFrames[2])
+            Align.scaleToGameW(playerShipEngine, 0.025)
             let playerShipGun = rootObj.physics.add.sprite(0, 0, 'guns', rootObj.shipGunsFrames[1])
             Align.scaleToGameW(playerShipGun, 0.01)
+
+            let playerShield = rootObj.physics.add.sprite(0, 0, 'shield2')
+            Align.scaleToGameW(playerShield, 0.11)
+            playerShield.play('shield2')
 
             rootObj.playerContainer.add(playerShipGun)
             rootObj.playerContainer.add(playerShipEngine)
             rootObj.playerContainer.add(playerShip)
+            rootObj.playerContainer.add(playerShield)
 
             playerShipEngine.y += playerShip.displayHeight / 1.5
             playerShipGun.y -= playerShip.displayHeight / 2
@@ -129,6 +196,11 @@ const spiderTank = {
             enemyShipShipGun2.flipX = true
             Align.scaleToGameW(enemyShipShipGun2, 0.0075)
 
+            let enemyShield = rootObj.physics.add.sprite(0, 0, 'shield')
+            enemyShield.setAlpha(0.5)
+            Align.scaleToGameW(enemyShield, 0.05)
+            enemyShield.play('shield')
+
             enemyShipShipEngine.y -= enemyShip.displayHeight / 1.1
             enemyShipShipEngine.x += enemyShip.displayWidth * 0.03
             enemyShipShipGun1.x -= enemyShip.displayWidth / 2
@@ -138,14 +210,15 @@ const spiderTank = {
             enemyContainer.add(enemyShipShipGun1)
             enemyContainer.add(enemyShipShipGun2)
             enemyContainer.add(enemyShip)
+            enemyContainer.add(enemyShield)
 
             enemyContainer.shoot = () => {
                 shootProjectile(enemyContainer.list[1].x + enemyContainer.x,
-                    enemyContainer.list[1].y + enemyContainer.y, 1,
-                    500, false, 1, true, 0.015)
+                    enemyContainer.list[1].y + enemyContainer.y * 1.25, 5,
+                    500, false, 1, true, 0.035, 4.71239, true)
                 shootProjectile(enemyContainer.list[2].x + enemyContainer.x,
-                    enemyContainer.list[2].y + enemyContainer.y, 1,
-                    500, false, 1, true, 0.015)
+                    enemyContainer.list[2].y + enemyContainer.y * 1.25, 5,
+                    500, false, 1, true, 0.035, 4.71239, true)
             }
 
 
@@ -180,32 +253,174 @@ const spiderTank = {
             enemyShipShipGun2.x += enemyShip.displayWidth / 2
             enemyShipShipGun3.y += enemyShip.displayHeight / 2
 
+            let enemyShield = rootObj.physics.add.sprite(0, 0, 'shield')
+            enemyShield.setAlpha(0.5)
+            Align.scaleToGameW(enemyShield, 0.1)
+            enemyShield.play('shield')
+
+
             enemyContainer.add(enemyShipShipEngine)
             enemyContainer.add(enemyShipShipGun3)
             enemyContainer.add(enemyShipShipGun1)
             enemyContainer.add(enemyShipShipGun2)
             enemyContainer.add(enemyShip)
+            enemyContainer.add(enemyShield)
+
+            rootObj.aGrid.placeAtIndex(index, enemyContainer)
+
+            enemyContainer.shoot = () => {
+                shootProjectile(enemyContainer.list[3].x + enemyContainer.x,
+                    enemyContainer.list[3].y + enemyContainer.y, 3,
+                    500, false, 1, true, 0.015, 1.5708)
+                shootProjectile(enemyContainer.list[2].x + enemyContainer.x,
+                    enemyContainer.list[2].y + enemyContainer.y, 3,
+                    500, false, 1, true, 0.015, 1.5708)
+                shootProjectile(enemyContainer.list[1].x + enemyContainer.x,
+                    enemyContainer.list[1].y + enemyContainer.y * 1.05, 0,
+                    500, false, 1, true, 0.035, 0)
+            }
+
+            return enemyContainer
+        }
+
+        function addStriker(index) {
+            let enemyContainer = rootObj.add.container()
+            let enemyShip = rootObj.physics.add.sprite(0, 0, 'spaceships', rootObj.shipFrames[1])
+            enemyShip.flipY = true
+            Align.scaleToGameW(enemyShip, 0.03)
+            let enemyShipShipEngine = rootObj.physics.add.sprite(0, 0, 'engines', rootObj.shipEnginesFrames[1])
+            enemyShipShipEngine.flipY = true
+            Align.scaleToGameW(enemyShipShipEngine, 0.015)
+            let enemyShipEffect = rootObj.physics.add.sprite(0, 0, 'lightning')
+            enemyShipEffect.play('lightning')
+            enemyShipEffect.flipY = true
+            Align.scaleToGameW(enemyShipEffect, 0.05)
+
+            enemyShipShipEngine.y -= enemyShip.displayHeight / 1.5
+
+            enemyContainer.add(enemyShipShipEngine)
+            enemyContainer.add(enemyShip)
+            enemyContainer.add(enemyShipEffect)
+
+            enemyContainer.charge = () => {
+                const angle = Phaser.Math.RAD_TO_DEG * Phaser.Math.Angle.Between(enemyContainer.x, enemyContainer.y, rootObj.playerContainer.x, rootObj.playerContainer.y);
+                enemyContainer.setAngle(angle - 90);
+
+                rootObj.tweens.add({
+                    targets: enemyContainer,
+                    y: rootObj.playerContainer.y,
+                    x: rootObj.playerContainer.x,
+                    duration: 2000,
+                    onComplete: () => {
+                        enemyContainer.destroy()
+                    }
+                })
+            }
+
 
             rootObj.aGrid.placeAtIndex(index, enemyContainer)
 
             return enemyContainer
         }
 
-        function shootProjectile(x, y, missileIndex, velocity, playerMissile, up, flipY, scale) {
+        function addBattleship(index) {
+            let enemyContainer = rootObj.add.container()
+            let enemyShip = rootObj.physics.add.sprite(0, 0, 'spaceships', rootObj.shipFrames[6])
+            enemyShip.flipY = true
+            Align.scaleToGameW(enemyShip, 0.1)
+            let enemyShipShipEngine = rootObj.physics.add.sprite(0, 0, 'engines', rootObj.shipEnginesFrames[5])
+            enemyShipShipEngine.flipY = true
+            Align.scaleToGameW(enemyShipShipEngine, 0.035)
+            let enemyShipShipGun1 = rootObj.physics.add.sprite(0, 0, 'guns', rootObj.shipGunsFrames[2])
+            enemyShipShipGun1.flipY = true
+            Align.scaleToGameW(enemyShipShipGun1, 0.0075)
+            let enemyShipShipGun2 = rootObj.physics.add.sprite(0, 0, 'guns', rootObj.shipGunsFrames[2])
+            enemyShipShipGun2.flipY = true
+            enemyShipShipGun2.flipX = true
+            Align.scaleToGameW(enemyShipShipGun2, 0.0075)
+            let enemyShipShipGun3 = rootObj.physics.add.sprite(0, 0, 'guns', rootObj.shipGunsFrames[4])
+            enemyShipShipGun3.flipY = true
+            Align.scaleToGameW(enemyShipShipGun3, 0.0075)
+            let enemyShipShipGun4 = rootObj.physics.add.sprite(0, 0, 'guns', rootObj.shipGunsFrames[4])
+            enemyShipShipGun4.flipY = true
+            enemyShipShipGun4.flipX = true
+            Align.scaleToGameW(enemyShipShipGun4, 0.0075)
+
+            let enemyShipShipGun5 = rootObj.physics.add.sprite(0, 0, 'guns', rootObj.shipGunsFrames[1])
+            enemyShipShipGun5.flipY = true
+            Align.scaleToGameW(enemyShipShipGun5, 0.015)
+
+            let enemyShield = rootObj.physics.add.sprite(0, 0, 'shield3')
+            enemyShield.setAlpha(0.5)
+            Align.scaleToGameW(enemyShield, 0.25)
+            enemyShield.play('shield3')
+
+            enemyShipShipEngine.y -= enemyShip.displayHeight
+
+            enemyShipShipGun1.x -= enemyShip.displayWidth / 2.25
+            enemyShipShipGun2.x += enemyShip.displayWidth / 2.25
+            enemyShipShipGun1.y -= enemyShip.displayWidth / 7.5
+            enemyShipShipGun2.y -= enemyShip.displayWidth / 7.5
+
+            enemyShipShipGun3.x -= enemyShip.displayWidth / 7
+            enemyShipShipGun4.x += enemyShip.displayWidth / 7
+            enemyShipShipGun3.y += enemyShip.displayWidth / 2.15
+            enemyShipShipGun4.y += enemyShip.displayWidth / 2.15
+
+            enemyShipShipGun5.y += enemyShip.displayWidth / 2
+
+            enemyContainer.add(enemyShipShipEngine)
+            enemyContainer.add(enemyShipShipGun1)
+            enemyContainer.add(enemyShipShipGun2)
+            enemyContainer.add(enemyShipShipGun3)
+            enemyContainer.add(enemyShipShipGun4)
+            enemyContainer.add(enemyShipShipGun5)
+            enemyContainer.add(enemyShip)
+            enemyContainer.add(enemyShield)
+
+
+            rootObj.aGrid.placeAtIndex(index, enemyContainer)
+
+            enemyContainer.shoot = () => {
+                shootProjectile(enemyContainer.list[1].x + enemyContainer.x,
+                    enemyContainer.list[1].y + enemyContainer.y * 1.05, 1,
+                    500, false, 1, true, 0.015, 0)
+                shootProjectile(enemyContainer.list[2].x + enemyContainer.x,
+                    enemyContainer.list[2].y + enemyContainer.y * 1.05, 1,
+                    500, false, 1, true, 0.015, 0)
+                shootProjectile(enemyContainer.list[3].x + enemyContainer.x,
+                    enemyContainer.list[3].y + enemyContainer.y * 1.05, 3,
+                    500, false, 1, true, 0.015, 1.5708)
+                shootProjectile(enemyContainer.list[4].x + enemyContainer.x,
+                    enemyContainer.list[4].y + enemyContainer.y * 1.05, 3,
+                    500, false, 1, true, 0.015, 1.5708)
+                shootProjectile(enemyContainer.list[5].x + enemyContainer.x,
+                    enemyContainer.list[5].y + enemyContainer.y * 1.2, 2,
+                    500, false, 1, true, 0.035, 0)
+            }
+
+            return enemyContainer
+        }
+
+        function shootProjectile(x, y, missileIndex, velocity, playerMissile, up, flipY, scale, rotation, isProjectile = false) {
             let missile = rootObj.physics.add.sprite(x, y, 'missiles', rootObj.missilesFrames[missileIndex]);
             Align.scaleToGameW(missile, scale)
             missile.setVelocity(0, velocity * up)
             missile.flipY = flipY
+            missile.rotation = rotation
+            if (isProjectile) {
+                missile.displayHeight = missile.displayHeight / 10
+            }
             if (playerMissile) {
                 for (let i = 0; i < rootObj.enemies.length; i++) {
-                    rootObj.physics.add.overlap(rootObj.enemies[i].list[rootObj.enemies[i].list.length - 1], missile, (evt) => {
+                    rootObj.physics.add.overlap(rootObj.enemies[i].list[rootObj.enemies[i].list.length - 2], missile, (evt) => {
                         enemyTakeDamage(evt)
                         missile.destroy()
                     }, null, this);
                 }
             }
             else {
-                rootObj.physics.add.overlap(rootObj.playerContainer.list[rootObj.playerContainer.list.length - 1], missile, (evt) => {
+                rootObj.physics.add.overlap(rootObj.playerContainer.list[rootObj.playerContainer.list.length - 2], missile, (evt) => {
                     playerTakeDamage
                     missile.destroy()
                 }, null, this);
@@ -301,7 +516,9 @@ const spiderTank = {
 
             rootObj.input.keyboard.addCapture('SPACE');
             rootObj.input.keyboard.on('keydown-SPACE', function (event) {
-                shootProjectile(rootObj.playerContainer.list[0].x + rootObj.playerContainer.x, rootObj.playerContainer.list[0].y + rootObj.playerContainer.y, 0, 500, true, -1, true, 0.05)
+                shootProjectile(rootObj.playerContainer.list[0].x + rootObj.playerContainer.x,
+                    rootObj.playerContainer.list[0].y + rootObj.playerContainer.y,
+                    9, 500, true, -1, true, 0.035, 0)
             });
         }
 
@@ -314,7 +531,7 @@ const spiderTank = {
         }
 
         function removeItemOnce(arr, value) {
-            var index = arr.indexOf(value);
+            let index = arr.indexOf(value);
             if (index > -1) {
                 arr.splice(index, 1);
             }
@@ -332,8 +549,11 @@ const spiderTank = {
         function enemyTakeDamage(enemy) {
             enemy.health--
             if (enemy.health < 0) {
+                const x = enemy.parentContainer.x
+                const y = enemy.parentContainer.y
                 removeItemOnce(rootObj.enemies, enemy.parentContainer)
                 enemy.parentContainer.destroy()
+                explode(x, y)
             }
         }
 
@@ -372,6 +592,110 @@ const spiderTank = {
             }
         }
 
+        function addEnemyShipMovement(ship) {
+            let enemy = ship
+            rootObj.enemies.push(enemy)
+            let oldY = enemy.y
+            enemy.y = -100
+            rootObj.tweens.add({
+                targets: enemy,
+                y: oldY,
+                duration: 2000,
+                ease: 'Sine.easeInOut',
+                onComplete: () => {
+                    enemy.timeline = rootObj.tweens.createTimeline()
+                    enemy.timeline.add({
+                        targets: enemy,
+                        x: rootObj.cameras.main.width + enemy.x,
+                        duration: 30000,
+                        ease: 'Sine.easeInOut'
+                    })
+                    enemy.timeline.add({
+                        targets: enemy,
+                        x: (rootObj.cameras.main.width - enemy.x) * -1,
+                        duration: 30000,
+                        ease: 'Sine.easeInOut',
+                        repeat: -1,
+                        yoyo: true
+                    })
+                    enemy.timeline.play()
+                }
+            });
+        }
+
+        function joystickFunction() {
+            let cursorKeys = rootObj.joyStick.createCursorKeys();
+            let forceFactor = rootObj.joyStick.force
+            if (forceFactor > 1) {
+                forceFactor = 1
+            }
+            let s = ''
+            for (var name in cursorKeys) {
+                if (cursorKeys[name].isDown) {
+                    s += name;
+                }
+            }
+            switch (s) {
+                case "down":
+                    setPlayerVelocity(0, forceFactor, rootObj.playerContainer)
+                    break;
+                case "up":
+                    setPlayerVelocity(0, -forceFactor, rootObj.playerContainer)
+                    break;
+                case "left":
+                    setPlayerVelocity(-forceFactor, 0, rootObj.playerContainer)
+                    break;
+                case "right":
+                    setPlayerVelocity(forceFactor, 0, rootObj.playerContainer)
+                    break;
+                case "downright":
+                    setPlayerVelocity(forceFactor, forceFactor, rootObj.playerContainer)
+                    break;
+                case "upright":
+                    setPlayerVelocity(forceFactor, -forceFactor, rootObj.playerContainer)
+                    break;
+                case "downleft":
+                    setPlayerVelocity(-forceFactor, forceFactor, rootObj.playerContainer)
+                    break;
+                case "upleft":
+                    setPlayerVelocity(-forceFactor, -forceFactor, rootObj.playerContainer)
+                    break;
+                default:
+                    for (let i = 0; i < rootObj.playerContainer.list.length; i++) {
+                        rootObj.playerContainer.list[i].body.stop()
+                    }
+
+            }
+        }
+
+        function dynamicJoystick() {
+            rootObj.input.on('pointerdown', (pointer) => {
+                if (!rootObj.menuOpen) {
+                    rootObj.joyStick.setVisible(true);
+                    rootObj.joyStick.x = pointer.x
+                    rootObj.joyStick.y = pointer.y
+                }
+            })
+            rootObj.input.on('pointerup', (pointer) => {
+                if (!rootObj.menuOpen) {
+                    rootObj.joyStick.setVisible(false);
+                }
+            })
+        }
+
+        function explode(x, y) {
+            let exp = rootObj.add.sprite(x, y, 'explosion', frames[0])
+            exp.play('explosion', false)
+            exp.once('animationcomplete', () => {
+                rootObj.tweens.add({
+                    targets: exp,
+                    alpha: { value: 0, duration: 500 },
+                    onComplete: () => {
+                        exp.destroy()
+                    }
+                })
+            });
+        }
     },
 
     update() {

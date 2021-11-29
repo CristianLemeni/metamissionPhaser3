@@ -1,104 +1,92 @@
+{"frames": {
+
+"Hard Projectile (1).png":
 {
-	"textures": [
-		{
-			"image": "missiles.png",
-			"format": "RGBA8888",
-			"size": {
-				"w": 223,
-				"h": 612
-			},
-			"scale": 1,
-			"frames": [
-				{
-					"filename": "missile1.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 221,
-						"h": 384
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 221,
-						"h": 384
-					},
-					"frame": {
-						"x": 1,
-						"y": 1,
-						"w": 221,
-						"h": 384
-					}
-				},
-				{
-					"filename": "missile3.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 69,
-						"h": 224
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 69,
-						"h": 224
-					},
-					"frame": {
-						"x": 1,
-						"y": 387,
-						"w": 69,
-						"h": 224
-					}
-				},
-				{
-					"filename": "missile2.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 65,
-						"h": 216
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 65,
-						"h": 216
-					},
-					"frame": {
-						"x": 72,
-						"y": 387,
-						"w": 65,
-						"h": 216
-					}
-				},
-				{
-					"filename": "missile4.png",
-					"rotated": false,
-					"trimmed": false,
-					"sourceSize": {
-						"w": 65,
-						"h": 216
-					},
-					"spriteSourceSize": {
-						"x": 0,
-						"y": 0,
-						"w": 65,
-						"h": 216
-					},
-					"frame": {
-						"x": 139,
-						"y": 387,
-						"w": 65,
-						"h": 216
-					}
-				}
-			]
-		}
-	],
-	"meta": {
-		"app": "https://www.codeandweb.com/texturepacker",
-		"version": "3.0",
-		"smartupdate": "$TexturePacker:SmartUpdate:c6d0312c9983a727914493d002628891:527e1d081d0009161b10d79ab38a7cf3:8d689123e69039521733e59a295f5240$"
-	}
+	"frame": {"x":115,"y":1,"w":62,"h":90},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":62,"h":90},
+	"sourceSize": {"w":62,"h":90}
+},
+"Hard Projectile (2).png":
+{
+	"frame": {"x":179,"y":1,"w":62,"h":90},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":62,"h":90},
+	"sourceSize": {"w":62,"h":90}
+},
+"Hard Projectile.png":
+{
+	"frame": {"x":243,"y":1,"w":62,"h":90},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":62,"h":90},
+	"sourceSize": {"w":62,"h":90}
+},
+"Projectile (2).png":
+{
+	"frame": {"x":115,"y":93,"w":28,"h":25},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":25},
+	"sourceSize": {"w":28,"h":25}
+},
+"Projectile (3).png":
+{
+	"frame": {"x":59,"y":99,"w":16,"h":54},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":54},
+	"sourceSize": {"w":16,"h":54}
+},
+"Projectile (4).png":
+{
+	"frame": {"x":1,"y":99,"w":17,"h":56},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":17,"h":56},
+	"sourceSize": {"w":17,"h":56}
+},
+"Projectile (5).png":
+{
+	"frame": {"x":175,"y":93,"w":16,"h":54},
+	"rotated": true,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":54},
+	"sourceSize": {"w":16,"h":54}
+},
+"Projectile.png":
+{
+	"frame": {"x":145,"y":93,"w":28,"h":25},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":28,"h":25},
+	"sourceSize": {"w":28,"h":25}
+},
+"Splash (9).png":
+{
+	"frame": {"x":58,"y":1,"w":55,"h":96},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":96},
+	"sourceSize": {"w":55,"h":96}
+},
+"Splash (10).png":
+{
+	"frame": {"x":1,"y":1,"w":55,"h":96},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":55,"h":96},
+	"sourceSize": {"w":55,"h":96}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "missiles.png",
+	"format": "RGBA8888",
+	"size": {"w":306,"h":119},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:576cf04b1c7e6d65a8a2b8c8e86ee189:43ef0547aa0f0966a8c8227754670c23:8d689123e69039521733e59a295f5240$"
+}
 }
