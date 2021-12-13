@@ -9,7 +9,9 @@ const spiderTank = {
         this.load.atlas('planets', './assets/planets.png', './assets/planets.json')
         this.load.atlas('missiles', './assets/missiles.png', './assets/missiles.json')
         this.load.atlas('explosion', './assets/explosion.png', './assets/explosion.json');
+        this.load.atlas('menuAssets', './assets/menuAssets.png', './assets/menuAssets.json')
         this.load.image('star', './assets/star.png')
+        this.load.image('fullscreenBtn', './assets/fullscreenBtn.png')
         this.load.spritesheet("shield", "./assets/shield.png", { frameWidth: 170, frameHeight: 170 });
         this.load.spritesheet("shield2", "./assets/shield2.png", { frameWidth: 160, frameHeight: 160 });
         this.load.spritesheet("shield3", "./assets/shield3.png", { frameWidth: 160, frameHeight: 160 });
@@ -20,6 +22,7 @@ const spiderTank = {
         this.load.audio('shieldHit', ['./assets/sounds/shieldHit.ogg'])
         this.load.audio('explosion', ['./assets/sounds/explode.ogg'])
         this.load.audio('laserBig2', ['./assets/sounds/bigLaser2.ogg'])
+
 
     },
 
@@ -83,16 +86,24 @@ const spiderTank = {
         rootObj.horizontalVelocity = 0
         rootObj.verticalVelocity = 0
         rootObj.speed = 350
+        rootObj.soundOn = 1
         rootObj.playerContainer = rootObj.add.container()
         rootObj.playerContainer.health = 10
         rootObj.enemies = []
         rootObj.target = new Phaser.Math.Vector2();
         rootObj.physics.world.enableBody(rootObj.playerContainer);
 
-        rootObj.battleshipHealth = 15
-        rootObj.droneHealth = 3
-        rootObj.strikerHealth = 0
-        rootObj.tankerHealth = 10
+        rootObj.waveNumber = 0
+
+        rootObj.battleshipHealth = 15 + rootObj.waveNumber
+        rootObj.droneHealth = 3 + rootObj.waveNumber
+        rootObj.strikerHealth = 0 + rootObj.waveNumber
+        rootObj.tankerHealth = 10 + rootObj.waveNumber
+
+        rootObj.mainMenu = rootObj.add.container()
+        rootObj.endGameMenu = rootObj.add.container()
+
+
 
         rootObj.aGrid = new AlignGrid({ scene: rootObj, rows: 7, cols: 13 })
 
@@ -100,7 +111,7 @@ const spiderTank = {
         addPlayer()
         addKeyboardControls()
         addScoreCounter()
-        // rootObj.aGrid.showNumbers()
+        rootObj.aGrid.showNumbers()
         rootObj.children.bringToTop(rootObj.playerContainer);
 
         rootObj.joyStick = rootObj.plugins.get('rexvirtualjoystickplugin').add(rootObj, {
@@ -133,28 +144,33 @@ const spiderTank = {
             })
         })
 
-        rootObj.emitter.emit("spawnStriker", 32)
-
         rootObj.emitter.on('enemyShoot', () => {
             for (let i = 0; i < rootObj.enemies.length; i++) {
                 rootObj.enemies[i].shoot()
             }
         }, this);
 
+        //to be replaced with socket logic
+        //each wave will spawn two rows of Drone enemies(small ships)
+        //Each third wave a Tanker enemy will appear(medium ship)
+        //Each fifth wave a Battleship will appear(large ship)
+        //Each wave is currently triggered when you defeat all the enemies
+        //each wave will also increase the health of all enemies by 1
         rootObj.emitter.on('newWave', () => {
-            addEnemyRow(3, 6)
+            addEnemyRow(16, 4, 1)
             rootObj.time.delayedCall(3000, () => {
-                addEnemyRow(16, 6)
+                addEnemyRow(29, 4, 1)
             })
+            if (rootObj.waveNumber % 3 == 0 && rootObj.waveNumber != 0) {
+                rootObj.emitter.emit("spawnTanker", 45)
+            }
+            if (rootObj.waveNumber % 5 == 0 && rootObj.waveNumber != 0) {
+                rootObj.emitter.emit("spawnBattleship", 32)
+            }
         }, this);
 
-        //
-        addEnemyRow(3, 6)
-        rootObj.time.delayedCall(3000, () => {
-            addEnemyRow(16, 6)
-        })
-
-        const timer = rootObj.time.addEvent({
+        //this timer triggers all enemies to shoot
+        rootObj.timer = rootObj.time.addEvent({
             delay: 6000,// ms
             callback: () => {
                 rootObj.emitter.emit('enemyShoot');
@@ -163,6 +179,10 @@ const spiderTank = {
             // callbackScope: thisArg,
             loop: true
         });
+
+        createMenu()
+        addUI()
+        addScoreCounter()
 
         function addBackground() {
             for (let i = 0; i < getRandomInt(100, 1000); i++) {
@@ -336,6 +356,8 @@ const spiderTank = {
                 yoyo: true,
                 loop: -1
             });
+
+            enemyShip.health = rootObj.tankerHealth
 
             return enemyContainer
         }
@@ -643,6 +665,13 @@ const spiderTank = {
             }
             else {
                 rootObj.shieldHit.play({ volume: 0.15 })
+                rootObj.tweens.add({
+                    targets: rootObj.playerContainer.list[rootObj.playerContainer.list.length - 1],
+                    alpha: { value: 0 },
+                    duration: 10,
+                    repeat: 4,
+                    yoyo: true
+                });
             }
 
         }
@@ -662,17 +691,30 @@ const spiderTank = {
                 enemy.parentContainer.list[enemy.parentContainer.list.length - 1].visible = false
             }
             else {
+                console.log(enemy.health)
                 rootObj.shieldHit.play({ volume: 0.15 })
+                let timeline = rootObj.tweens.createTimeline()
+                timeline.add({
+                    targets: enemy.parentContainer.list[enemy.parentContainer.list.length - 1],
+                    alpha: { value: 0.1 },
+                    duration: 100,
+                });
+                timeline.add({
+                    targets: enemy.parentContainer.list[enemy.parentContainer.list.length - 1],
+                    alpha: { value: 0.5 },
+                    duration: 100,
+                });
+                timeline.play()
             }
         }
 
-        function addEnemyRow(startIndex, rowLength) {
+        function addEnemyRow(startIndex, rowLength, distance = 0) {
             let pos = startIndex
             for (let i = 0; i < rowLength; i++) {
                 let d = addDrone(pos)
                 rootObj.enemies.push(d)
                 let oldY = d.y
-                pos++
+                pos += 1 + distance
                 d.y = -100
                 rootObj.tweens.add({
                     targets: d,
@@ -683,14 +725,14 @@ const spiderTank = {
                         d.timeline = rootObj.tweens.createTimeline()
                         d.timeline.add({
                             targets: d,
-                            x: rootObj.cameras.main.width + d.x,
-                            duration: 30000,
+                            x: rootObj.cameras.main.width + d.width,
+                            duration: 10000 / (i + 1),
                             ease: 'Sine.easeInOut'
                         })
                         d.timeline.add({
                             targets: d,
-                            x: (rootObj.cameras.main.width - d.x) * -1,
-                            duration: 30000,
+                            x: - d.width,
+                            duration: 30000 / (i + 1),
                             ease: 'Sine.easeInOut',
                             repeat: -1,
                             yoyo: true
@@ -699,6 +741,8 @@ const spiderTank = {
                     }
                 });
             }
+            rootObj.children.bringToTop(rootObj.mainMenu)
+            rootObj.children.bringToTop(rootObj.fullScreen)
         }
 
         function addEnemyShipMovement(ship) {
@@ -715,13 +759,13 @@ const spiderTank = {
                     enemy.timeline = rootObj.tweens.createTimeline()
                     enemy.timeline.add({
                         targets: enemy,
-                        x: rootObj.cameras.main.width + enemy.x,
+                        x: rootObj.cameras.main.width + enemy.width,
                         duration: 30000,
                         ease: 'Sine.easeInOut'
                     })
                     enemy.timeline.add({
                         targets: enemy,
-                        x: (rootObj.cameras.main.width - enemy.x) * -1,
+                        x: -enemy.width,
                         duration: 30000,
                         ease: 'Sine.easeInOut',
                         repeat: -1,
@@ -730,6 +774,8 @@ const spiderTank = {
                     enemy.timeline.play()
                 }
             });
+            rootObj.children.bringToTop(rootObj.mainMenu)
+            rootObj.children.bringToTop(rootObj.fullScreen)
         }
 
         function joystickFunction() {
@@ -811,12 +857,14 @@ const spiderTank = {
             rootObj.gamePaused = true
             rootObj.physics.world.isPaused = true;
             rootObj.tweens.pauseAll();
+            rootObj.timer.paused = true
         }
 
         function resumeGame() {
             rootObj.gamePaused = false
             rootObj.physics.world.isPaused = false;
             rootObj.tweens.resumeAll();
+            rootObj.timer.paused = false
         }
 
         function resetGame() {
@@ -845,11 +893,209 @@ const spiderTank = {
             rootObj.aGrid.placeAtIndex(1, rootObj.scoreCounter)
             Align.scaleToGameW(rootObj.scoreCounter, 0.025)
         }
+
+        function addUI() {
+            let atlasTexture = rootObj.textures.get('menuAssets');
+            let frames = atlasTexture.getFrameNames();
+            rootObj.settingsBtn = rootObj.physics.add.sprite(0, 0, 'menuAssets', frames[2]);
+            rootObj.aGrid.placeAtIndex(11, rootObj.settingsBtn)
+            Align.scaleToGameW(rootObj.settingsBtn, 0.05)
+            rootObj.settingsBtn.setInteractive({ useHandCursor: true })
+            rootObj.settingsBtn.on('pointerdown', () => {
+                if (!rootObj.menuOpen) {
+                    openMenu()
+                    rootObj.menuOpen = true
+                }
+                else {
+                    closeMenu()
+                    rootObj.menuOpen = false
+                }
+            })
+
+            rootObj.fullScreen = rootObj.physics.add.sprite(0, 0, 'fullscreenBtn');
+            rootObj.aGrid.placeAtIndex(9, rootObj.fullScreen)
+            Align.scaleToGameW(rootObj.fullScreen, 0.05)
+            rootObj.fullScreen.setInteractive({ useHandCursor: true })
+            rootObj.fullScreen.on('pointerdown', () => {
+                //         rootObj.mouseSound.play()
+                if (!rootObj.menuOpen) {
+                    if (document.body.requestFullscreen) {
+                        document.body.requestFullscreen();
+                    } else if (document.body.webkitRequestFullscreen) { /* Safari */
+                        document.body.webkitRequestFullscreen();
+                    } else if (document.body.msRequestFullscreen) { /* IE11 */
+                        document.body.msRequestFullscreen();
+                    }
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) { /* Safari */
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) { /* IE11 */
+                        document.msExitFullscreen();
+                    }
+                    rootObj.menuOpen = true
+                }
+            })
+
+            rootObj.fullScreen.on('pointerdown', () => {
+                rootObj.menuOpen = false
+            })
+        }
+
+        function createMenu() {
+            let atlasTexture = rootObj.textures.get('menuAssets');
+            let frames = atlasTexture.getFrameNames();
+            let menuWindow = rootObj.physics.add.sprite(0, 0, 'menuAssets', frames[0]);
+            rootObj.aGrid.placeAtIndex(45, menuWindow)
+            Align.scaleToGameW(menuWindow, 0.35)
+
+            rootObj.mainMenu.add(menuWindow)
+
+            let soundBtnAct = rootObj.physics.add.sprite(0, 0, 'menuAssets', frames[1]);
+            rootObj.aGrid.placeAtIndex(31, soundBtnAct)
+            Align.scaleToGameW(soundBtnAct, 0.15)
+
+            let soundText = rootObj.add.text(0, 0, 'Sound', { font: "34px" })
+            rootObj.aGrid.placeAtIndex(31, soundText)
+            Align.scaleToGameW(soundText, 0.125)
+            soundText.setOrigin(0.5)
+
+            let soundSwitchOn = rootObj.physics.add.sprite(0, 0, 'menuAssets', frames[3]);
+            rootObj.aGrid.placeAtIndex(33, soundSwitchOn)
+            Align.scaleToGameW(soundSwitchOn, 0.055)
+
+            soundSwitchOn.setInteractive({ useHandCursor: true })
+            soundSwitchOn.visible = rootObj.soundOn
+            soundSwitchOn.on('pointerdown', () => {
+                soundSwitchOff.visible = true
+                soundSwitchOn.visible = false
+                stopSound()
+            })
+
+            rootObj.mainMenu.add(soundBtnAct)
+            rootObj.mainMenu.add(soundText)
+            rootObj.mainMenu.add(soundSwitchOn)
+
+            let soundSwitchOff = rootObj.physics.add.sprite(0, 0, 'menuAssets', frames[4]);
+            rootObj.aGrid.placeAtIndex(33, soundSwitchOff)
+            Align.scaleToGameW(soundSwitchOff, 0.055)
+
+            soundSwitchOff.setInteractive({ useHandCursor: true })
+            soundSwitchOff.visible = !rootObj.soundOn
+            soundSwitchOff.on('pointerdown', () => {
+                soundSwitchOn.visible = true
+                soundSwitchOff.visible = false
+                playSound()
+            })
+            rootObj.mainMenu.add(soundSwitchOff)
+
+            let scoreBtn = rootObj.physics.add.sprite(0, 0, 'menuAssets', frames[1]);
+            rootObj.aGrid.placeAtIndex(45, scoreBtn)
+            Align.scaleToGameW(scoreBtn, 0.15)
+
+            let scoreText = rootObj.add.text(0, 0, 'Score', { font: "34px" });
+            rootObj.aGrid.placeAtIndex(45, scoreText)
+            Align.scaleToGameW(scoreText, 0.125)
+            scoreText.setOrigin(0.5)
+
+            rootObj.score = rootObj.add.text(0, 0, '0', { font: "40px" });
+            rootObj.score.setOrigin(0.5)
+            rootObj.aGrid.placeAtIndex(58, rootObj.score)
+            Align.scaleToGameW(rootObj.score, 0.035 * rootObj.score.text.length)
+
+
+            rootObj.mainMenu.add(scoreBtn)
+            rootObj.mainMenu.add(scoreText)
+            rootObj.mainMenu.add(rootObj.score)
+
+            rootObj.mainMenu.visible = false
+        }
+
+        function closeMenu() {
+            resumeGame()
+            rootObj.mainMenu.visible = false
+        }
+
+        function openMenu() {
+            pauseGame()
+            rootObj.children.bringToTop(rootObj.mainMenu)
+            rootObj.mainMenu.visible = true
+        }
+
+        function stopSound() {
+            rootObj.soundOn = 0
+            rootObj.explosionAudio.setMute(true)
+            rootObj.bkMusic.setMute(true)
+            rootObj.shieldHit.setMute(true)
+            rootObj.laserSmall.setMute(true)
+            rootObj.laserBig.setMute(true)
+            rootObj.laserBig2.setMute(true)
+        }
+
+        function playSound() {
+            rootObj.soundOn = 1
+            rootObj.explosionAudio.setMute(false)
+            rootObj.bkMusic.setMute(false)
+            rootObj.shieldHit.setMute(false)
+            rootObj.laserSmall.setMute(false)
+            rootObj.laserBig.setMute(false)
+            rootObj.laserBig2.setMute(false)
+        }
+
+        function addEndGameMenu() {
+            let atlasTexture = rootObj.textures.get('menuAssets');
+            let frames = atlasTexture.getFrameNames();
+            let menuWindow = rootObj.physics.add.sprite(0, 0, 'menuAssets', frames[0]);
+            rootObj.aGrid.placeAtIndex(45, menuWindow)
+            Align.scaleToGameW(menuWindow, 0.5)
+            rootObj.endGameMenu.add(menuWindow)
+
+            let scoreBtn = rootObj.physics.add.sprite(0, 0, 'menuAssets', frames[1]);
+            rootObj.aGrid.placeAtIndex(45, scoreBtn)
+            Align.scaleToGameW(scoreBtn, 0.2)
+
+            let scoreText = rootObj.add.text(0, 0, 'Score', { font: "34px" });
+            scoreText.setOrigin(0.5)
+            rootObj.aGrid.placeAtIndex(45, scoreText)
+            Align.scaleToGameW(scoreText, 0.175)
+            Align.center(scoreText)
+
+            let score = rootObj.add.text(0, 0, 'test', { font: "40px" });
+            score.text = rootObj.score.text
+            score.setOrigin(0.5)
+            rootObj.aGrid.placeAtIndex(58, score)
+            Align.scaleToGameW(score, 0.035 * score.text.length)
+
+            rootObj.endGameMenu.add(scoreBtn)
+            rootObj.endGameMenu.add(scoreText)
+            rootObj.endGameMenu.add(score)
+
+            let restartBtn = rootObj.physics.add.sprite(0, 0, 'menuAssets', frames[5]);
+            rootObj.aGrid.placeAtIndex(71, restartBtn)
+            Align.scaleToGameW(restartBtn, 0.075)
+            restartBtn.setInteractive({ useHandCursor: true })
+            restartBtn.on('pointerdown', () => {
+                //         rootObj.mouseSound.play()
+                resetGame()
+            })
+            rootObj.endGameMenu.add(restartBtn)
+
+            rootObj.endGameMenu.visible = false
+        }
+
+        function showEndGameMenu() {
+            rootObj.children.bringToTop(rootObj.endGameMenu)
+            rootObj.endGameMenu.visible = true
+            rootObj.settingsBtn.visible = false
+            rootObj.physics.world.isPaused = true;
+            rootObj.tweens.killAll();
+        }
     },
 
     update() {
         if (this.enemies.length < 1) {
             this.emitter.emit('newWave');
+            this.waveNumber++
         }
         if (this.playerContainer.body) {
             let distance = Phaser.Math.Distance.Between(this.playerContainer.x, this.playerContainer.y, this.target.x, this.target.y);

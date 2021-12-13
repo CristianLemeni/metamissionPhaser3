@@ -1,0 +1,146 @@
+{
+	"textures": [
+		{
+			"image": "menuAssets.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 304,
+				"h": 477
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "MainPanel02.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 302,
+						"h": 403
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 302,
+						"h": 403
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 302,
+						"h": 403
+					}
+				},
+				{
+					"filename": "Button01.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 152,
+						"h": 40
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 152,
+						"h": 40
+					},
+					"frame": {
+						"x": 1,
+						"y": 406,
+						"w": 152,
+						"h": 40
+					}
+				},
+				{
+					"filename": "Button5.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 70,
+						"h": 70
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 70,
+						"h": 70
+					},
+					"frame": {
+						"x": 155,
+						"y": 406,
+						"w": 70,
+						"h": 70
+					}
+				},
+				{
+					"filename": "Switch01.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 66,
+						"h": 24
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 66,
+						"h": 24
+					},
+					"frame": {
+						"x": 1,
+						"y": 448,
+						"w": 66,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Switch05.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 66,
+						"h": 24
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 66,
+						"h": 24
+					},
+					"frame": {
+						"x": 69,
+						"y": 448,
+						"w": 66,
+						"h": 24
+					}
+				},
+				{
+					"filename": "Button6.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 70,
+						"h": 70
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 70,
+						"h": 70
+					},
+					"frame": {
+						"x": 227,
+						"y": 406,
+						"w": 70,
+						"h": 70
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:2e214344051ad7af8423bcf5e14d3092:4154197fe7eb47d4b26e8e5b58398599:b647dce135ceb1153a1ffc6e7b11766a$"
+	}
+}
