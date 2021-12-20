@@ -111,7 +111,7 @@ const spiderTank = {
         addPlayer()
         addKeyboardControls()
         addScoreCounter()
-        rootObj.aGrid.showNumbers()
+        //rootObj.aGrid.showNumbers()
         rootObj.children.bringToTop(rootObj.playerContainer);
 
         rootObj.joyStick = rootObj.plugins.get('rexvirtualjoystickplugin').add(rootObj, {
