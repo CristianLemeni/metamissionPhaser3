@@ -94,6 +94,7 @@ const spiderTank = {
         rootObj.physics.world.enableBody(rootObj.playerContainer);
 
         rootObj.waveNumber = 0
+        rootObj.playerWeaponLoaded = true
 
         rootObj.battleshipHealth = 15 + rootObj.waveNumber
         rootObj.droneHealth = 3 + rootObj.waveNumber
@@ -626,8 +627,14 @@ const spiderTank = {
 
             rootObj.input.keyboard.addCapture('SPACE');
             rootObj.input.keyboard.on('keydown-SPACE', function (event) {
-                rootObj.playerContainer.shoot()
+                if(rootObj.playerWeaponLoaded){
+                    rootObj.playerContainer.shoot()
+                }
+                rootObj.playerWeaponLoaded = false
             });
+            rootObj.input.keyboard.on('keyup-SPACE', () => {
+                rootObj.playerWeaponLoaded = true
+            })
         }
 
         function setPlayerVelocity(x, y, playerContainer, key = false) {
@@ -1099,6 +1106,10 @@ const spiderTank = {
         }
         if (this.playerContainer.body) {
             let distance = Phaser.Math.Distance.Between(this.playerContainer.x, this.playerContainer.y, this.target.x, this.target.y);
+            if(this.playerContainer.body.y < this.scale.gameSize.height/2){
+                this.playerContainer.body.stop()
+                this.playerContainer.body.y += 5
+            }
             if (this.playerContainer.body.speed > 0) {
                 if (distance < 1) {
                     this.playerContainer.body.stop()
