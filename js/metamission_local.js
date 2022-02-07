@@ -118,9 +118,9 @@ const spiderTank = {
         rootObj.joyStick = rootObj.plugins.get('rexvirtualjoystickplugin').add(rootObj, {
             x: rootObj.cameras.main.worldView.x + rootObj.cameras.main.width / 2,
             y: rootObj.cameras.main.worldView.y + rootObj.cameras.main.height * 0.85,
-            radius: 50,
-            base: rootObj.add.circle(0, 0, 50, 0x888888),
-            thumb: rootObj.add.circle(0, 0, 25, 0xcccccc),
+            radius: 25,
+            base: rootObj.add.circle(0, 0, 25, 0x888888),
+            thumb: rootObj.add.circle(0, 0, 12, 0xcccccc),
         }).on('update', joystickFunction, rootObj);
         rootObj.joyStick.setVisible(false);
 
