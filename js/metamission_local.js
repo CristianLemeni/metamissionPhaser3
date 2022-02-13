@@ -10,6 +10,7 @@ const spiderTank = {
         this.load.atlas('missiles', './assets/missiles.png', './assets/missiles.json')
         this.load.atlas('explosion', './assets/explosion.png', './assets/explosion.json');
         this.load.atlas('menuAssets', './assets/menuAssets.png', './assets/menuAssets.json')
+        this.load.image('shootBtn', './assets/shootBtn.png')
         this.load.image('star', './assets/star.png')
         this.load.image('fullscreenBtn', './assets/fullscreenBtn.png')
         this.load.spritesheet("shield", "./assets/shield.png", { frameWidth: 170, frameHeight: 170 });
@@ -111,7 +112,6 @@ const spiderTank = {
         addBackground()
         addPlayer()
         addKeyboardControls()
-        addScoreCounter()
         //rootObj.aGrid.showNumbers()
         rootObj.children.bringToTop(rootObj.playerContainer);
 
@@ -125,7 +125,6 @@ const spiderTank = {
         rootObj.joyStick.setVisible(false);
 
         dynamicJoystick()
-
 
         rootObj.emitter.on("spawnBattleship", (positionIndex) => {
             let battleship = addBattleship(positionIndex)
@@ -185,6 +184,19 @@ const spiderTank = {
         addUI()
         addScoreCounter()
 
+        rootObj.shootBtn = rootObj.physics.add.sprite(rootObj.cameras.main.worldView.x + rootObj.cameras.main.width / 1.25, rootObj.cameras.main.worldView.y + rootObj.cameras.main.height * 0.85, 'shootBtn')
+        Align.scaleToGameW(rootObj.shootBtn, 0.1)
+        rootObj.shootBtn.setInteractive()
+
+        rootObj.shootBtn.on('pointerdown', function (event) {
+            if (rootObj.playerWeaponLoaded) {
+                rootObj.playerContainer.shoot()
+            }
+            rootObj.playerWeaponLoaded = false
+        });
+        rootObj.shootBtn.on('pointerup', () => {
+            rootObj.playerWeaponLoaded = true
+        })
         function addBackground() {
             for (let i = 0; i < getRandomInt(100, 1000); i++) {
                 let star = rootObj.physics.add.sprite(getRandomInt(0, rootObj.cameras.main.worldView.width), getRandomInt(0, rootObj.cameras.main.worldView.height), 'star');
@@ -627,7 +639,7 @@ const spiderTank = {
 
             rootObj.input.keyboard.addCapture('SPACE');
             rootObj.input.keyboard.on('keydown-SPACE', function (event) {
-                if(rootObj.playerWeaponLoaded){
+                if (rootObj.playerWeaponLoaded) {
                     rootObj.playerContainer.shoot()
                 }
                 rootObj.playerWeaponLoaded = false
@@ -1106,7 +1118,7 @@ const spiderTank = {
         }
         if (this.playerContainer.body) {
             let distance = Phaser.Math.Distance.Between(this.playerContainer.x, this.playerContainer.y, this.target.x, this.target.y);
-            if(this.playerContainer.body.y < this.scale.gameSize.height/2){
+            if (this.playerContainer.body.y < this.scale.gameSize.height / 2) {
                 this.playerContainer.body.stop()
                 this.playerContainer.body.y += 5
             }
