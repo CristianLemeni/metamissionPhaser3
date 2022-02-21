@@ -97,10 +97,10 @@ const spiderTank = {
         rootObj.waveNumber = 0
         rootObj.playerWeaponLoaded = true
 
-        rootObj.battleshipHealth = 15 + rootObj.waveNumber
-        rootObj.droneHealth = 3 + rootObj.waveNumber
-        rootObj.strikerHealth = 0 + rootObj.waveNumber
-        rootObj.tankerHealth = 10 + rootObj.waveNumber
+        rootObj.battleshipHealth = 15 + rootObj.waveNumber * 3
+        rootObj.droneHealth = 3 + rootObj.waveNumber * 3
+        rootObj.strikerHealth = 0 + rootObj.waveNumber * 3
+        rootObj.tankerHealth = 10 + rootObj.waveNumber * 3
 
         rootObj.mainMenu = rootObj.add.container()
         rootObj.endGameMenu = rootObj.add.container()
@@ -677,6 +677,8 @@ const spiderTank = {
                 rootObj.playerContainer.destroy()
                 explode(x, y)
                 rootObj.emitter.emit("endGame")
+                addEndGameMenu()
+                showEndGameMenu()
             }
             else if (rootObj.playerContainer.health == 0) {
                 rootObj.shieldHit.play({ volume: 0.15 })
