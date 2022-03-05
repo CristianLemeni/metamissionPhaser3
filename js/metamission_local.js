@@ -711,7 +711,6 @@ const spiderTank = {
                 enemy.parentContainer.list[enemy.parentContainer.list.length - 1].visible = false
             }
             else {
-                console.log(enemy.health)
                 rootObj.shieldHit.play({ volume: 0.15 })
                 let timeline = rootObj.tweens.createTimeline()
                 timeline.add({
@@ -845,7 +844,6 @@ const spiderTank = {
 
         function dynamicJoystick() {
             rootObj.input.on('pointerdown', (pointer) => {
-                console.log(checkButton(pointer, rootObj.shootBtn))
                 if (!rootObj.menuOpen && checkButton(pointer, rootObj.shootBtn)) {
                     rootObj.joyStick.setVisible(true);
                     rootObj.joyStick.x = pointer.x
