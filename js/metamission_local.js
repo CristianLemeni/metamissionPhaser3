@@ -112,7 +112,6 @@ const spiderTank = {
         addBackground()
         addPlayer()
         addKeyboardControls()
-        //rootObj.aGrid.showNumbers()
         rootObj.children.bringToTop(rootObj.playerContainer);
 
         rootObj.joyStick = rootObj.plugins.get('rexvirtualjoystickplugin').add(rootObj, {
@@ -845,18 +844,18 @@ const spiderTank = {
         }
 
         function dynamicJoystick() {
-            rootObj.input.on('pointerdown', (pointer) => {
-                if (!rootObj.menuOpen) {
-                    rootObj.joyStick.setVisible(true);
-                    rootObj.joyStick.x = pointer.x
-                    rootObj.joyStick.y = pointer.y
-                }
-            })
-            rootObj.input.on('pointerup', (pointer) => {
-                if (!rootObj.menuOpen) {
-                    rootObj.joyStick.setVisible(false);
-                }
-            })
+            // rootObj.input.on('pointerdown', (pointer) => {
+            //     if (!rootObj.menuOpen) {
+            //         rootObj.joyStick.setVisible(true);
+            //         rootObj.joyStick.x = pointer.x
+            //         rootObj.joyStick.y = pointer.y
+            //     }
+            // })
+            // rootObj.input.on('pointerup', (pointer) => {
+            //     if (!rootObj.menuOpen) {
+            //         rootObj.joyStick.setVisible(false);
+            //     }
+            // })
         }
 
         function explode(x, y) {
@@ -938,7 +937,6 @@ const spiderTank = {
             Align.scaleToGameW(rootObj.fullScreen, 0.05)
             rootObj.fullScreen.setInteractive({ useHandCursor: true })
             rootObj.fullScreen.on('pointerdown', () => {
-                //         rootObj.mouseSound.play()
                 if (!rootObj.menuOpen) {
                     if (document.body.requestFullscreen) {
                         document.body.requestFullscreen();
