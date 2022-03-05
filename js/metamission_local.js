@@ -1168,6 +1168,7 @@ const gameConf = {
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
     scene: spiderTank,
+    activePointers: 3
 };
 
 let game = new Phaser.Game(gameConf);
