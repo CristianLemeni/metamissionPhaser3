@@ -17,12 +17,12 @@ const spiderTank = {
         this.load.spritesheet("shield2", "./assets/shield2.png", { frameWidth: 160, frameHeight: 160 });
         this.load.spritesheet("shield3", "./assets/shield3.png", { frameWidth: 160, frameHeight: 160 });
         this.load.spritesheet('lightning', './assets/lightning.png', { frameWidth: 85, frameHeight: 85 })
-        this.load.audio('bkMusic', ['./assets/sounds/bkMusic.ogg'])
-        this.load.audio('laserSmall', ['./assets/sounds/laserSFX.ogg'])
-        this.load.audio('laserBig', ['./assets/sounds/bigLaser.ogg'])
-        this.load.audio('shieldHit', ['./assets/sounds/shieldHit.ogg'])
-        this.load.audio('explosion', ['./assets/sounds/explode.ogg'])
-        this.load.audio('laserBig2', ['./assets/sounds/bigLaser2.ogg'])
+        this.load.audio('bkMusic', ['./assets/sounds/bkMusic.wav'])
+        this.load.audio('laserSmall', ['./assets/sounds/laserSFX.wav'])
+        this.load.audio('laserBig', ['./assets/sounds/bigLaser.wav'])
+        this.load.audio('shieldHit', ['./assets/sounds/shieldHit.wav'])
+        this.load.audio('explosion', ['./assets/sounds/explode.wav'])
+        this.load.audio('laserBig2', ['./assets/sounds/bigLaser2.wav'])
 
 
     },
