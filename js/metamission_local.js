@@ -113,7 +113,7 @@ const spiderTank = {
         addPlayer()
         addKeyboardControls()
         rootObj.children.bringToTop(rootObj.playerContainer);
-
+        rootObj.input.addPointer(1)
         rootObj.joyStick = rootObj.plugins.get('rexvirtualjoystickplugin').add(rootObj, {
             x: rootObj.cameras.main.worldView.x + rootObj.cameras.main.width / 2,
             y: rootObj.cameras.main.worldView.y + rootObj.cameras.main.height * 0.85,
@@ -845,11 +845,7 @@ const spiderTank = {
 
         function dynamicJoystick() {
             rootObj.input.on('pointerdown', (pointer) => {
-                if (!rootObj.menuOpen &&
-                    pointer.x > rootObj.shootBtn.x + rootObj.shootBtn.width &&
-                    pointer.x < rootObj.shootBtn.x &&
-                    pointer.y > rootObj.shootBtn.y + rootObj.shootBtn.height &&
-                    pointer.y < rootObj.shootBtn.y) {
+                if (!rootObj.menuOpen) {
                     rootObj.joyStick.setVisible(true);
                     rootObj.joyStick.x = pointer.x
                     rootObj.joyStick.y = pointer.y
