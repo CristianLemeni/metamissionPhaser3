@@ -845,6 +845,7 @@ const spiderTank = {
 
         function dynamicJoystick() {
             rootObj.input.on('pointerdown', (pointer) => {
+                console.log(checkButton(pointer, rootObj.shootBtn))
                 if (!rootObj.menuOpen && checkButton(pointer, rootObj.shootBtn)) {
                     rootObj.joyStick.setVisible(true);
                     rootObj.joyStick.x = pointer.x
@@ -1140,10 +1141,16 @@ function getRandomInt(min, max) {
 }
 
 function checkButton(pointer, button) {
-    if (pointer.x < button.x + button.w &&
-        pointer.x > button.x &&
-        pointer.y < button.y + button.h &&
-        pointer.y > button.y) {
+    if (pointer.x < button.x && pointer.y < button.y) {
+        return true
+    }
+    else if (pointer.x < button.x && pointer.y > button.y + button.displayHeight) {
+        return true
+    }
+    else if (pointer.x > button.x + button.displayWidth && pointer.y < button.y) {
+        return true
+    }
+    else if (pointer.x > button.x + button.displayWidth && pointer.y > button.y + button.displayHeight) {
         return true
     }
     else {
