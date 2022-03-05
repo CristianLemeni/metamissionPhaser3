@@ -844,18 +844,22 @@ const spiderTank = {
         }
 
         function dynamicJoystick() {
-            // rootObj.input.on('pointerdown', (pointer) => {
-            //     if (!rootObj.menuOpen) {
-            //         rootObj.joyStick.setVisible(true);
-            //         rootObj.joyStick.x = pointer.x
-            //         rootObj.joyStick.y = pointer.y
-            //     }
-            // })
-            // rootObj.input.on('pointerup', (pointer) => {
-            //     if (!rootObj.menuOpen) {
-            //         rootObj.joyStick.setVisible(false);
-            //     }
-            // })
+            rootObj.input.on('pointerdown', (pointer) => {
+                if (!rootObj.menuOpen &&
+                    pointer.x > rootObj.shootBtn.x + rootObj.shootBtn.width &&
+                    pointer.x < rootObj.shootBtn.x &&
+                    pointer.y > rootObj.shootBtn.y + rootObj.shootBtn.height &&
+                    pointer.y < rootObj.shootBtn.y) {
+                    rootObj.joyStick.setVisible(true);
+                    rootObj.joyStick.x = pointer.x
+                    rootObj.joyStick.y = pointer.y
+                }
+            })
+            rootObj.input.on('pointerup', (pointer) => {
+                if (!rootObj.menuOpen) {
+                    rootObj.joyStick.setVisible(false);
+                }
+            })
         }
 
         function explode(x, y) {
@@ -1094,7 +1098,6 @@ const spiderTank = {
             Align.scaleToGameW(restartBtn, 0.075)
             restartBtn.setInteractive({ useHandCursor: true })
             restartBtn.on('pointerdown', () => {
-                //         rootObj.mouseSound.play()
                 resetGame()
             })
             rootObj.endGameMenu.add(restartBtn)
